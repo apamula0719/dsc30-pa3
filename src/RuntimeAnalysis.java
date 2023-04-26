@@ -166,6 +166,7 @@ public class RuntimeAnalysis {
      * @param data list of data to sort
      * @param numRun the number of trials to run
      */
+
     public static void timeCountSort(ArrayList<Integer> data, int numRun) {
         long startTime = 0, endTime = 0, totalTime = 0;
         Sorts sorts = new Sorts();
@@ -194,7 +195,8 @@ public class RuntimeAnalysis {
         numData = NUM_DATA;
         for (int i = 0; i < NUM_TEST; i++) {
             ArrayList<Integer> data = randomNumbers(numData, MIN, MAX);
-            timeInsertionSort(data, NUM_RUN);
+            timeInsertionSort(deepCopyArrayList(data), NUM_RUN);
+            timeBucketSort(deepCopyArrayList(data), NUM_RUN);
             numData += numData;
         }
     }

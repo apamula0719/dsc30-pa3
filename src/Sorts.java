@@ -12,9 +12,24 @@ import java.util.ArrayList;
  */
 public class Sorts {
 
-    // TODO
+    /**
+     * Performs Insertion Sort on list parameter, starting from start and ending at
+     * end, inclusive both
+     *
+     * @param list The arraylist we want to sort
+     * @param start The inital index on subsection of Arraylist we want to sort
+     * @param end The final index of the subsection of Arraylist we want to sort
+     */
     public void InsertionSort(ArrayList<Integer> list, int start, int end) {
-        // TODO
+        for(int i = start; i < end; i++){
+            for(int j = i+1; j > start; j--){
+              if(list.get(j-1) > list.get(j)){
+                  int temp = list.get(j);
+                  list.set(j, list.get(j-1));
+                  list.set(j-1, temp);
+              }
+            }
+        }
     }
 
     /**
@@ -72,20 +87,61 @@ public class Sorts {
         }
     }
 
-    // TODO
+    /**
+     * Performs Quick Sort on list parameter, starting from start and ending at
+     * end, inclusive both
+     *
+     * @param list The arraylist we want to sort
+     * @param start The inital index on subsection of Arraylist we want to sort
+     * @param end The final index of the subsection of Arraylist we want to sort
+     */
     public void QuickSort(ArrayList<Integer> list, int start, int end) {
-        // TODO
+        if(start < end){
+            int pivotIndex = partition(list, start, end);
+            QuickSort(list, start, pivotIndex -1);
+            QuickSort(list, pivotIndex + 1, end);
+        }
     }
 
-    // TODO
+    /**
+     * Partitioning helper function for Quicksort Method
+     *
+     * @param arr The arraylist we want to sort
+     * @param l The inital index on subsection of Arraylist we want to sort
+     * @param h The final index of the subsection of Arraylist we want to sort
+     */
     private int partition(ArrayList<Integer> arr, int l, int h) {
-        // TODO
-        return 0;
+        int pivot = arr.get((h+l)/2);
+        while(l < h){
+            while(arr.get(l) < pivot)
+                l++;
+            while(arr.get(h) > pivot)
+                h--;
+            if(l < h){
+                int temp = arr.get(l);
+                arr.set(l, arr.get(h));
+                arr.set(h, temp);
+            }
+        }
+        return l;
     }
 
-    // TODO
+    /**
+     * Performs Quick Sort on list parameter, starting from start and ending at
+     * end, inclusive both, switches to Insertion Sort when a sub-list is smaller
+     * than the cutoff size.
+     *
+     * @param list The arraylist we want to sort
+     */
     public void Modified_QuickSort(ArrayList<Integer> list, int start, int end, int cutoff) {
-        // TODO
+        if(end - start > cutoff){
+            int pivotIndex = partition(list, start, end);
+            Modified_QuickSort(list, start, pivotIndex -1, cutoff);
+            Modified_QuickSort(list, pivotIndex + 1, end, cutoff);
+        }
+        else if(start < end){
+            InsertionSort(list, start, end);
+        }
     }
 
     /**
@@ -114,15 +170,51 @@ public class Sorts {
         return (data - listMin) / numBuckets;
     }
 
-    // TODO
+    /**
+     * Performs Bucket Sort on list parameter, starting from start and ending at
+     * end, inclusive both
+     *
+     * @param list The arraylist we want to sort
+     */
     public ArrayList<Integer> bucketSort(ArrayList<Integer> list) {
-        // TODO
-        return new ArrayList<Integer>();
+        ArrayList<ArrayList<Integer>> buckets = new ArrayList<>(assignNumBuckets(list));
+        for(int i = 0; i < assignNumBuckets(list); i++)//Fill the arraylist with arraylists
+            buckets.add(new ArrayList<Integer>());
+        for(int j : list)//Sort the values into buckets
+            buckets.get(assignBucketIndex(j, assignNumBuckets(list), Collections.min(list))).add(j);
+        for(ArrayList<Integer> arr : buckets)//Sort each bucket
+            InsertionSort(arr, 0, arr.size()-1);
+        ArrayList<Integer> finalArray = new ArrayList<Integer>(buckets.size());
+        for(ArrayList<Integer> sub_arr : buckets)//Merge the list
+            finalArray.addAll(sub_arr);
+        return finalArray;
     }
 
-
+    /**
+     * Performs Count Sort on list parameter, starting from start and ending at
+     * end, inclusive both
+     *
+     * @param list The arraylist we want to sort
+     */
     public ArrayList<Integer> countSort(ArrayList<Integer> list) {
-        // TODO
-        return new ArrayList<Integer>();
+        int[] counting = new int[Collections.max(list)+1];
+        for(int i : list)
+            counting[i]++;
+        int running_total = 0;
+        for(int i=0; i < counting.length; i++){
+            running_total+=counting[i];
+            counting[i] = running_total;
+        }
+        int[] finalArray = new int[list.size()];
+        for (Integer j : list) {
+            counting[j]--;
+            finalArray[counting[j]] = j;
+        }
+        ArrayList<Integer> finalArrayList = new ArrayList<Integer>(list.size());
+        for (int i : finalArray){
+            finalArrayList.add(i);
+        }
+        return finalArrayList;
+
     }
 }
